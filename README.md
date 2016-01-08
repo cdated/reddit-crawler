@@ -3,7 +3,7 @@ reddit-crawler
 
 ### Description:
 
-In short, this project can obtain subreddit data, report progress, and display the data graphically.
+reddit-crawler obtains subreddit data, reports completion status, and displays its data graphically.
 
 #### Crawling
 
@@ -15,11 +15,11 @@ In short, this project can obtain subreddit data, report progress, and display t
 
 `generate_graph.py` - Creates a graph of all subreddits that are connected through recommendations section
 
-An interactive subset of the data can be found here: https://github.com/cdated/subredditor
+An interactive visualization of the data can be found here: https://github.com/cdated/subredditor
 
 ### Usage:
 
-To use `generate_graph.py` one must either run `subreddit_crawler.py` to populate the MongoDB database, or use mongorestore on the bson in data/dump/reddit.  Once a dataset has been loaded/generated two types of graphs can be constructed; a full network with filters or a region with child node limits.
+To use `generate_graph.py` one must either run `subreddit_crawler.py` to populate the MongoDB database, or use mongorestore on the bson in data/dump/reddit.
 
 #### Loading Database
 
