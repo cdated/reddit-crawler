@@ -5,6 +5,7 @@ import time
 import sys
 import pymongo
 
+
 def main():
     client = pymongo.MongoClient()
     db = client.reddit
@@ -18,8 +19,10 @@ def main():
                 print("No items in the backlog, exiting")
                 return
 
+            count = str(db.command('collstats', 'subreddits')['count'])
+
             print('Checking ' + backlog[-1])
-            print('Checked: ' + str(db.command('collstats', 'subreddits')['count']))
+            print('Checked: ' + count)
             print('Remaining: ' + str(len(backlog)))
             print()
         else:

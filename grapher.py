@@ -7,10 +7,12 @@ import pymongo
 import argparse
 import sys
 
+
 def write_list_to_file(alist, filepath):
     with open(filepath, 'w') as file:
         for item in alist:
             file.write("{}\n".format(item))
+
 
 def generate_graph(related_subs, subscribers, nsfw_subs, censored, full, min_subscribers, outfile):
 
@@ -43,6 +45,7 @@ def calculate_edge_weight(subscriber_cnt):
 
     return str(log_cnt)
 
+
 def usage(parser):
     """ Let the user know the expected runtime args """
 
@@ -54,10 +57,14 @@ def usage(parser):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-c', '--censored', action='store_true', help='Hide over 18 subreddits', default=False)
-    parser.add_argument('-m', '--minimum', help='Min subcribers to be added', type=int, default=100, required=True)
-    parser.add_argument('-n', '--nsfw', action='store_true', help='Only over 18 subreddits', default=False)
-    parser.add_argument('-v', '--verbose', action='store_true', help='Show debugging', default=False)
+    parser.add_argument('-c', '--censored', action='store_true',
+                        help='Hide over 18 subreddits', default=False)
+    parser.add_argument('-m', '--minimum', type=int, default=100, required=True,
+                        help='Min subcribers to be added')
+    parser.add_argument('-n', '--nsfw', action='store_true',
+                        help='Only over 18 subreddits', default=False)
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Show debugging', default=False)
 
     usage(parser)
 
@@ -104,7 +111,8 @@ def main():
         outfile = 'full.gv'
         full = True
 
-    generate_graph(related_subs, subscribers, nsfw_subs, censored, full, args.minimum, outfile)
+    generate_graph(related_subs, subscribers, nsfw_subs,
+                   censored, full, args.minimum, outfile)
 
 
 if __name__ == '__main__':
