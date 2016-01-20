@@ -11,12 +11,16 @@ from urllib.request import urlopen
 
 RELATED_SUBS = {}
 
+
 def connection_valid():
+    """ Simply request reddit.com """
+
     try:
         urlopen('http://www.reddit.com')
         return True
     except:
         return False
+
 
 def check_connection():
     retries = 0
@@ -27,6 +31,7 @@ def check_connection():
         time.sleep(4)
         retries += 1
 
+
 def extract_references(line):
     references = []
     while len(line):
@@ -34,7 +39,7 @@ def extract_references(line):
 
         # If line does not seem to contain a subreddit
         if start_index == -1:
-            break 
+            break
 
         # Trim the '/r/' out of the string
         start_index += 3
@@ -46,7 +51,7 @@ def extract_references(line):
             rel_sub = rel_sub_strs[0]
 
         # Trim out the subreddit chars for next iteration
-        line = line[start_index+len(rel_sub):]
+        line = line[start_index + len(rel_sub):]
 
         # Combined subreddits won't be counted
         if '+' in rel_sub:
@@ -55,6 +60,7 @@ def extract_references(line):
         references.append(rel_sub)
 
     return references
+
 
 def get_related(reddit, sub_title, db, backlog):
     new_subreddits = []
@@ -71,18 +77,18 @@ def get_related(reddit, sub_title, db, backlog):
     # Get description of sub and lowercase for matching
     try:
         desc = subreddit.description.lower()
-    except praw.errors.Forbidden: 
-        record = {'_id' : sub_title,
-                  'linked' : [],
-                  'access' : 'private',
-                  'type' : 'subreddit'}
+    except praw.errors.Forbidden:
+        record = {'_id': sub_title,
+                  'linked': [],
+                  'access': 'private',
+                  'type': 'subreddit'}
         add_record(db, record)
         return []
     except praw.errors.NotFound:
-        record = {'_id' : sub_title,
-                  'linked' : [],
-                  'access' : 'banned',
-                  'type' : 'subreddit'}
+        record = {'_id': sub_title,
+                  'linked': [],
+                  'access': 'banned',
+                  'type': 'subreddit'}
         add_record(db, record)
         return []
     except praw.errors.InvalidSubreddit:
@@ -114,12 +120,12 @@ def get_related(reddit, sub_title, db, backlog):
                    (not rel_sub in new_subreddits):
                     new_subreddits.append(rel_sub)
 
-    record = {'_id' : sub_title,
-              'type' : 'subreddit',
-              'language' : subreddit.lang,
-              'created' : subreddit.created_utc,
-              'subscribers' : subreddit.subscribers,
-              'linked' : RELATED_SUBS[sub_title]}
+    record = {'_id': sub_title,
+              'type': 'subreddit',
+              'language': subreddit.lang,
+              'created': subreddit.created_utc,
+              'subscribers': subreddit.subscribers,
+              'linked': RELATED_SUBS[sub_title]}
 
     if subreddit.over18:
         record['adult'] = True
@@ -129,12 +135,14 @@ def get_related(reddit, sub_title, db, backlog):
 
     return new_subreddits
 
+
 def add_record(db, record):
     try:
         db.subreddits.insert_one(record)
     except pymongo.errors.DuplicateKeyError:
         # Ignore collision
         pass
+
 
 def crawl(subreddit_seed):
     client = pymongo.MongoClient()
@@ -181,7 +189,9 @@ def crawl(subreddit_seed):
                     sys.exit(1)
 
         # Update the backlog in the DB
-        db.subreddits.update_one({'name': 'backlog'}, {"$set": {"items": backlog}}, upsert=True)
+        db.subreddits.update_one({'name': 'backlog'},
+                                 {"$set": {"items": backlog}}, upsert=True)
+
 
 def usage(parser):
     """ Let the user know the expected runtime args """
@@ -190,10 +200,12 @@ def usage(parser):
         parser.print_help()
         sys.exit()
 
+
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-s', '--subreddit', help='Subreddit seed', required=True)
+    parser.add_argument('-s', '--subreddit', required=True,
+                        help='Subreddit seed')
 
     usage(parser)
 
