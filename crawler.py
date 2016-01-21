@@ -144,9 +144,20 @@ def add_record(db, record):
         pass
 
 
-def crawl(subreddit_seed):
-    client = pymongo.MongoClient()
+def get_db():
+    """ Provide a database connection """
+
+    # Load env variable MONGOCLIENT if set, otherwise set to localhost
+    uri = os.environ.get('MONGOCLIENT', 'localhost')
+    client = pymongo.MongoClient(uri)
     db = client.reddit
+
+    return db
+
+
+def crawl(subreddit_seed):
+    """ Add related subs to db and work through the subreddit backlog """
+    db = get_db()
 
     db_backlog = db.subreddits.find_one({'name': 'backlog'})
     if db_backlog:
