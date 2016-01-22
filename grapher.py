@@ -9,12 +9,15 @@ import sys
 
 
 def write_list_to_file(alist, filepath):
+    """ Simply write a python list out to a file """
+
     with open(filepath, 'w') as file:
         for item in alist:
             file.write("{}\n".format(item))
 
 
 def generate_graph(related_subs, subscribers, nsfw_subs, censored, full, min_subscribers, outfile):
+    """ Make a graphviz graph by adding edges for each sub and related subs """
 
     g = Digraph('G', filename=outfile)
 
@@ -38,6 +41,8 @@ def generate_graph(related_subs, subscribers, nsfw_subs, censored, full, min_sub
 
 
 def calculate_edge_weight(subscriber_cnt):
+    """ Keep weights relatively small despite large subscriber disparities """
+
     if subscriber_cnt == 0:
         log_cnt = 0
     else:
